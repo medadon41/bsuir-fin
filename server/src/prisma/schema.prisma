@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url = env("DATABASE_URL")
+}
+
+model User {
+  id            Int     @id @default(autoincrement())
+  email         String  @unique
+  name          String
+  middleName    String
+  surname       String
+  password      String
+  birthDate     DateTime
+  is2faEnabled  Boolean
+  creditTickets CreditTicket[]
+}
+
+model StuffMember {
+  id            Int             @id @default(autoincrement())
+  role          Int
+  userId        Int
+  creditTickets CreditTicket[]
+}
+
+model Token {
+  id            Int     @id @default(autoincrement())
+  publicKey     String  @unique
+  usagesAmount  Int
+  usagesLeft    Int
+  activeUntill  DateTime
+  maxAmount     Float
+  tokenStatus   Int
+}
+
+model Transaction {
+  id        Int     @id @default(autoincrement())
+  sender    String
+  receiver  String
+  amount    Float
+}
+
+model Credit {
+  id            Int     @id @default(autoincrement())
+  title         String
+  description   String
+  minAmount     Float
+  maxAmount     Float
+  percent       Float
+  tickets       CreditTicket[]
+}
+
+model CreditTicket {
+  id            Int         @id @default(autoincrement())
+  creditId      Int
+  credit        Credit      @relation(fields: [creditId], references: [id])
+  senderId      Int
+  sender        User        @relation(fields: [senderId], references: [id])
+  status        Int
+  manager       StuffMember @relation(fields: [creditId], references: [id])
+  amount        Float
+}
+
