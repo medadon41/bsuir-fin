@@ -16,7 +16,9 @@ model User {
   password      String
   birthDate     DateTime
   is2faEnabled  Boolean
+  mainBalance   Int     @default(0)
   creditTickets CreditTicket[]
+  transaction   Transaction[]
 }
 
 model StuffMember {
@@ -37,10 +39,12 @@ model Token {
 }
 
 model Transaction {
-  id        Int     @id @default(autoincrement())
-  sender    String
-  receiver  String
-  amount    Float
+  id                Int     @id @default(autoincrement())
+  senderId          Int
+  sender            User    @relation(fields: [senderId], references: [id])
+  senderAccount     String
+  receiverAccount   String
+  amount            Float
 }
 
 model Credit {

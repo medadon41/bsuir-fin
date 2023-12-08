@@ -10,4 +10,18 @@ userRouter.get('/', usersController.get
      */
 );
 
+userRouter.post('/signup', usersController.signUp
+    /*
+    #swagger.tags = ['Users']
+    #swagger.description = 'Some description...'
+     */
+);
+
+userRouter.post('/login', usersController.login
+    /*
+    #swagger.tags = ['Users']
+    #swagger.description = 'Some description...'
+     */
+);
+
 export default userRouter

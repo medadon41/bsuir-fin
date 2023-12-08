@@ -27,7 +27,6 @@ app.get('*', (req, res) => {
 })
 
 
-// обработка ошибок
 app.use((err, req, res, next) => {
     console.log(err)
     const status = err.status || 500
@@ -35,7 +34,6 @@ app.use((err, req, res, next) => {
     res.status(status).json({ message })
 })
 
-// запуск сервера
-app.listen(3000, () => {
+app.listen(3001, () => {
     console.log('🚀 Server ready')
 })

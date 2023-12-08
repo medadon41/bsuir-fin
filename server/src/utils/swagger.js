@@ -10,18 +10,12 @@ const doc = {
         title: 'Fin project api',
         description: 'yet another api, now on express'
     },
-    host: 'localhost:3000',
+    host: 'localhost:3001',
     schemes: ['http']
 }
 
 const outputFile = join(currentDir, 'swagger_output.json')
-const endpointsFiles = [
-    join(routesDir, 'borrows.route.js'),
-    join(routesDir, 'credits.route.js'),
-    join(routesDir, 'tokens.route.js'),
-    join(routesDir, 'transactions.route.js'),
-    join(routesDir, 'users.route.js'),
-]
+const endpointsFiles = ['../../app.js']
 
 swaggerAutogen(/*options*/)(outputFile, endpointsFiles, doc).then(({ success }) => {
     console.log(`Generated: ${success}`)
