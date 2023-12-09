@@ -32,40 +32,88 @@ async function get(req, res, next) {
 
 async function post(req, res, next) {
     try {
-        const { receiverAccount, senderAccount, senderId, amount } = req.body
+        const { receiverAccount, senderAccount, amount, type } = req.body
+
+        if (+type === 0) {
+            const sender = await prisma.user.update({
+                where: {
+                    id: req.id.id
+                },
+                data: {
+                    mainBalance: {
+                        decrement: +amount
+                    }
+                }
+            })
+
+            try {
+                const receiver = await prisma.user.update({
+                    where: {
+                        publicId: receiverAccount
+                    },
+                    data: {
+                        mainBalance: {
+                            increment: +amount
+                        }
+                    }
+                })
+            } catch (e) {
+                return res.status(404).json({message: "User not found"})
+            }
+        } else if (+type === 1) {
+            const currDate = new Date()
+
+            const loan = await prisma.loan.findUnique({
+                where: {
+                    id: +receiverAccount
+                }
+            })
+
+            console.log(loan)
+            if (!loan)
+                return res.status(404).json({ message: "Loan not found"})
+            else if (loan.dateExpire < currDate)
+                return res.status(400).json({ message: "Loan already expired"})
+            else if (loan.isRepaid)
+                return res.status(400).json({ message: "Loan already repaid"})
+
+            const sender = await prisma.user.update({
+                where: {
+                    id: req.id.id
+                },
+                data: {
+                    mainBalance: {
+                        decrement: +amount
+                    }
+                }
+            })
+
+            const isRepaid = loan.amountRepaid + amount > loan.amount
+            const loanUpd = await prisma.loan.update({
+                where: {
+                    id: loan.id
+                },
+                data: {
+                    dateLastCharged: currDate,
+                    amountRepaid: loan.amountRepaid + amount,
+                    isRepaid: isRepaid
+                }
+            })
+        }
+
         const tx = await prisma.transaction.create({
             data: {
-                senderId: senderId,
+                sender: {
+                    connect: {id: req.id.id}
+                },
                 receiverAccount: receiverAccount,
                 senderAccount: senderAccount,
-                amount: +amount
+                amount: +amount,
+                type: +type
             }
         })
 
-        const sender = await prisma.user.update({
-            where: {
-                id: senderId
-            },
-            data: {
-                mainBalance: {
-                    decrement: +amount
-                }
-            }
-        })
-
-        const receiver = await prisma.user.update({
-            where: {
-                id: +receiverAccount
-            },
-            data: {
-                mainBalance: {
-                    increment: +amount
-                }
-            }
-        })
-
-
-        res.json(tx)
+        res.status(200).json(tx)
     } catch (e) {
         next(e)
     }

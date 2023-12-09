@@ -1,4 +1,4 @@
-import {comparePasswords, hashPassword} from "../services/users.service.js";
+import {comparePasswords, generatePublicId, hashPassword} from "../services/users.service.js";
 import jwt from "jsonwebtoken";
 import {PrismaClient} from "@prisma/client";
 
@@ -19,7 +19,8 @@ async function signUp(req, res, next) {
                 surname: surname,
                 password: passwordHash,
                 birthDate: new Date(Date.now()),
-                is2faEnabled: is2faEnabled
+                is2faEnabled: is2faEnabled,
+                publicId: generatePublicId()
             }
         })
         res.json(user)

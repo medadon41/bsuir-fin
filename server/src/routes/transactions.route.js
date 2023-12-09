@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import * as transactionsController from '../controllers/transactions.controller.js'
+import {verifyToken} from "../middleware/auth.middleware.js";
 
 const transactionsRouter = Router()
 
@@ -17,7 +18,7 @@ transactionsRouter.get('/', transactionsController.get
      */
 );
 
-transactionsRouter.post('/', transactionsController.post
+transactionsRouter.post('/', verifyToken, transactionsController.post
     /*
     #swagger.tags = ['Transactions']
     #swagger.description = 'Creates a new transaction'

@@ -1,5 +1,6 @@
 import express from 'express'
 import cookieParser from "cookie-parser"
+import bodyParser from "body-parser"
 import fs from 'fs'
 
 
@@ -9,20 +10,27 @@ import tokensRouter from "./src/routes/tokens.route.js";
 import transactionsRouter from "./src/routes/transactions.route.js";
 import borrowsRouter from "./src/routes/borrows.route.js";
 import authRouter from "./src/routes/auth.route.js";
+import creditsRouter from "./src/routes/credits.route.js";
+import internalRouter from "./src/routes/internal.route.js";
 
 const app = express()
 const port = 3000
 
 app.use(cookieParser());
-app.use(express.json())
+app.use(express.json());
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 
 const swaggerFile = JSON.parse(fs.readFileSync('src/utils/swagger_output.json'))
 
 app.use('/users', usersRouter)
 app.use('/tokens', tokensRouter)
+app.use('/credits', creditsRouter)
 app.use('/transactions', transactionsRouter)
 app.use('/borrows', borrowsRouter)
 app.use('/auth', authRouter)
+app.use('/internal', internalRouter)
 
 app.use('/api-doc', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 

@@ -4,7 +4,11 @@ const prisma = new PrismaClient()
 
 async function get(req, res, next) {
     try {
-        const users = await prisma.user.findMany()
+        const users = await prisma.user.findMany({
+            include: {
+                loans: true
+            }
+        })
 
         res.status(200).json(users)
     } catch (e) {

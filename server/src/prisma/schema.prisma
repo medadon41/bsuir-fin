@@ -8,23 +8,25 @@ datasource db {
 }
 
 model User {
-  id            Int     @id @default(autoincrement())
-  email         String  @unique
+  id            Int             @id @default(autoincrement())
+  email         String          @unique
   name          String
   middleName    String
   surname       String
   password      String
   birthDate     DateTime
   is2faEnabled  Boolean
-  mainBalance   Int     @default(0)
+  mainBalance   Int             @default(0)
+  publicId      String          @default("")
   creditTickets CreditTicket[]
   transaction   Transaction[]
+  loans         Loan[]
 }
 
-model StuffMember {
+model StaffMember {
   id            Int             @id @default(autoincrement())
   role          Int
-  userId        Int
+  userId        Int             @unique
   creditTickets CreditTicket[]
 }
 
@@ -39,32 +41,54 @@ model Token {
 }
 
 model Transaction {
-  id                Int     @id @default(autoincrement())
+  id                Int       @id @default(autoincrement())
+  type              Int       @default(0)
   senderId          Int
-  sender            User    @relation(fields: [senderId], references: [id])
+  sender            User      @relation(fields: [senderId], references: [id])
   senderAccount     String
   receiverAccount   String
   amount            Float
+  time              DateTime  @default(now())
 }
 
 model Credit {
-  id            Int     @id @default(autoincrement())
+  id            Int       @id @default(autoincrement())
+  active        Boolean   @default(true)
   title         String
   description   String
   minAmount     Float
   maxAmount     Float
   percent       Float
+  maxYears      Float     @default(0)
   tickets       CreditTicket[]
+  loans         Loan[]
 }
 
 model CreditTicket {
-  id            Int         @id @default(autoincrement())
+  id            Int           @id @default(autoincrement())
   creditId      Int
-  credit        Credit      @relation(fields: [creditId], references: [id])
+  credit        Credit        @relation(fields: [creditId], references: [id])
   senderId      Int
-  sender        User        @relation(fields: [senderId], references: [id])
+  sender        User          @relation(fields: [senderId], references: [id])
   status        Int
-  manager       StuffMember @relation(fields: [creditId], references: [id])
+  managerId     Int?
+  manager       StaffMember?  @relation(fields: [managerId], references: [id])
   amount        Float
+  years         Float         @default(0)
+  comment       String        @default("")
+}
+
+model Loan {
+  id                Int           @id @default(autoincrement())
+  creditId          Int
+  credit            Credit        @relation(fields: [creditId], references: [id])
+  borrowerId        Int
+  borrower          User          @relation(fields: [borrowerId], references: [id])
+  dateStarted       DateTime      @default(now())
+  dateExpire        DateTime
+  dateLastCharged   DateTime?
+  isRepaid          Boolean       @default(false)
+  amount            Float
+  amountRepaid      Float
 }
 
