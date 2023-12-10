@@ -10,7 +10,7 @@ const doc = {
         title: 'Fin project api',
         description: 'yet another api, now on express'
     },
-    host: 'localhost:3001',
+    host: 'localhost:5000',
     schemes: ['http']
 }
 

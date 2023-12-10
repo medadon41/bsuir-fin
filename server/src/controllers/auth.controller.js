@@ -7,7 +7,7 @@ const config = process.env
 
 async function signUp(req, res, next) {
     try {
-        const {email, name, middleName, surname, password, is2faEnabled} = req.body
+        const {email, name, middleName, surname, password} = req.body
 
         const passwordHash = await hashPassword(password)
 
@@ -19,8 +19,7 @@ async function signUp(req, res, next) {
                 surname: surname,
                 password: passwordHash,
                 birthDate: new Date(Date.now()),
-                is2faEnabled: is2faEnabled,
-                publicId: generatePublicId()
+                publicId: await generatePublicId()
             }
         })
         res.json(user)

@@ -4,13 +4,13 @@ CREATE TABLE "new_Credit" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "active" BOOLEAN NOT NULL DEFAULT true,
     "title" TEXT NOT NULL,
-    "description" TEXT NOT NULL,
+    "receiverAccount" TEXT NOT NULL,
     "minAmount" REAL NOT NULL,
     "maxAmount" REAL NOT NULL,
     "percent" REAL NOT NULL,
     "maxYears" REAL NOT NULL DEFAULT 0
 );
-INSERT INTO "new_Credit" ("active", "description", "id", "maxAmount", "minAmount", "percent", "title") SELECT "active", "description", "id", "maxAmount", "minAmount", "percent", "title" FROM "Credit";
+INSERT INTO "new_Credit" ("active", "receiverAccount", "id", "maxAmount", "minAmount", "percent", "title") SELECT "active", "receiverAccount", "id", "maxAmount", "minAmount", "percent", "title" FROM "Credit";
 DROP TABLE "Credit";
 ALTER TABLE "new_Credit" RENAME TO "Credit";
 CREATE TABLE "new_CreditTicket" (

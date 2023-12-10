@@ -4,11 +4,18 @@ import * as usersController from "../controllers/users.controller.js";
 
 const userRouter = Router()
 
-userRouter.get('/', verifyToken, usersController.get
+
+userRouter.get('/info', verifyToken, usersController.getCurrentUser
     /*
     #swagger.tags = ['Users']
     #swagger.description = 'Some description...'
      */
 );
 
+userRouter.get('/', verifyToken, usersController.get
+    /*
+    #swagger.tags = ['Users']
+    #swagger.description = 'Some description...'
+     */
+);
 export default userRouter

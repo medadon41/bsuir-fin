@@ -29,6 +29,7 @@ const verifyToken = (req, res, next) => {
                 .cookie('token', refreshToken, { httpOnly: true, sameSite: 'strict' })
                 .header('Authorization', accessToken)
                 .send(decoded.user);
+
         } catch (e) {
             return res.status(401).json({message: "Invalid Token"});
         }

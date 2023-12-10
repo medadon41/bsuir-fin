@@ -5,13 +5,45 @@
     "description": "yet another api, now on express",
     "version": "1.0.0"
   },
-  "host": "localhost:3001",
+  "host": "localhost:5000",
   "basePath": "/",
   "schemes": [
     "http"
   ],
   "paths": {
-    "/users/": {
+    "/api/users/info": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Some description...",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/users/": {
       "get": {
         "tags": [
           "Users"
@@ -40,7 +72,7 @@
         }
       }
     },
-    "/credits/create": {
+    "/api/credits/create": {
       "post": {
         "tags": [
           "Credits"
@@ -79,7 +111,7 @@
         }
       }
     },
-    "/credits/borrow": {
+    "/api/credits/borrow": {
       "post": {
         "tags": [
           "Credits"
@@ -126,7 +158,7 @@
         }
       }
     },
-    "/credits/tickets": {
+    "/api/credits/tickets": {
       "get": {
         "tags": [
           "Credits"
@@ -182,7 +214,7 @@
         }
       }
     },
-    "/credits/accept-ticket/{id}": {
+    "/api/credits/accept-ticket/{id}": {
       "post": {
         "tags": [
           "Credits"
@@ -217,7 +249,7 @@
         }
       }
     },
-    "/credits/decline-ticket/{id}": {
+    "/api/credits/decline-ticket/{id}": {
       "post": {
         "tags": [
           "Credits"
@@ -264,7 +296,7 @@
         }
       }
     },
-    "/credits/archive/{id}": {
+    "/api/credits/archive/{id}": {
       "post": {
         "tags": [
           "Credits"
@@ -299,7 +331,7 @@
         }
       }
     },
-    "/credits/{id}/": {
+    "/api/credits/{id}/": {
       "get": {
         "tags": [
           "Credits"
@@ -334,7 +366,7 @@
         }
       }
     },
-    "/transactions/{id}": {
+    "/api/transactions/{id}": {
       "get": {
         "tags": [
           "Transactions"
@@ -380,7 +412,7 @@
         }
       }
     },
-    "/transactions/": {
+    "/api/transactions/": {
       "get": {
         "tags": [
           "Transactions"
@@ -410,9 +442,6 @@
               "type": "object",
               "properties": {
                 "receiverAccount": {
-                  "example": "any"
-                },
-                "senderAccount": {
                   "example": "any"
                 },
                 "amount": {
@@ -455,7 +484,7 @@
         }
       }
     },
-    "/auth/signup": {
+    "/api/auth/signup": {
       "post": {
         "tags": [
           "Auth"
@@ -482,9 +511,6 @@
                 },
                 "password": {
                   "example": "any"
-                },
-                "is2faEnabled": {
-                  "example": "any"
                 }
               }
             }
@@ -497,7 +523,7 @@
         }
       }
     },
-    "/auth/login": {
+    "/api/auth/login": {
       "post": {
         "tags": [
           "Auth"
@@ -527,7 +553,7 @@
         }
       }
     },
-    "/auth/refresh": {
+    "/api/auth/refresh": {
       "post": {
         "tags": [
           "Auth"
@@ -543,7 +569,7 @@
         }
       }
     },
-    "/internal/promote": {
+    "/api/internal/promote": {
       "post": {
         "tags": [
           "Internal"
@@ -590,7 +616,7 @@
         }
       }
     },
-    "/internal/": {
+    "/api/internal/": {
       "get": {
         "tags": [
           "Internal"

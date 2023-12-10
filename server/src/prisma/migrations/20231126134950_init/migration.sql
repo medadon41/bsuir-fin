@@ -40,7 +40,7 @@ CREATE TABLE "Transaction" (
 CREATE TABLE "Credit" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "title" TEXT NOT NULL,
-    "description" TEXT NOT NULL,
+    "receiverAccount" TEXT NOT NULL,
     "minAmount" REAL NOT NULL,
     "maxAmount" REAL NOT NULL,
     "percent" REAL NOT NULL

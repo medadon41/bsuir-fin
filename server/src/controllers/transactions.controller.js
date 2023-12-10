@@ -1,4 +1,5 @@
 import {PrismaClient} from "@prisma/client";
+import {compareTokens} from "../services/tokens.service.js";
 
 const prisma = new PrismaClient()
 
@@ -32,7 +33,33 @@ async function get(req, res, next) {
 
 async function post(req, res, next) {
     try {
-        const { receiverAccount, senderAccount, amount, type } = req.body
+        const { receiverAccount, amount, type } = req.body
+
+        const sender = await prisma.user.findFirst({
+            where: {
+                id: req.id.id,
+            }
+        })
+
+        if (sender.tokens != null && sender.tokens.length > 0) {
+            const token = req.body.token
+
+            if (!token)
+                return res.status(403).json({message: "User hasn't provided any type of tx confirmation"})
+
+            let found = false
+            sender.tokens.forEach(async t => {
+                if (await compareTokens(t, req.body.token)) {
+                    found = true
+                }
+            })
+
+            if (!found)
+                return res.status(403).json({message: "Wrong token provided"})
+        }
+
+        if (amount > sender.mainBalance)
+            return res.status(400).json({ message: "Not enough balance"})
 
         if (+type === 0) {
             const sender = await prisma.user.update({
@@ -107,7 +134,7 @@ async function post(req, res, next) {
                     connect: {id: req.id.id}
                 },
                 receiverAccount: receiverAccount,
-                senderAccount: senderAccount,
+                senderAccount: sender.publicId,
                 amount: +amount,
                 type: +type
             }

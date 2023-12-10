@@ -8,13 +8,12 @@ import swaggerUi from 'swagger-ui-express'
 import usersRouter from "./src/routes/users.route.js";
 import tokensRouter from "./src/routes/tokens.route.js";
 import transactionsRouter from "./src/routes/transactions.route.js";
-import borrowsRouter from "./src/routes/borrows.route.js";
 import authRouter from "./src/routes/auth.route.js";
 import creditsRouter from "./src/routes/credits.route.js";
 import internalRouter from "./src/routes/internal.route.js";
 
 const app = express()
-const port = 3000
+const port = 5000
 
 app.use(cookieParser());
 app.use(express.json());
@@ -24,18 +23,17 @@ app.use(bodyParser.urlencoded({
 
 const swaggerFile = JSON.parse(fs.readFileSync('src/utils/swagger_output.json'))
 
-app.use('/users', usersRouter)
-app.use('/tokens', tokensRouter)
-app.use('/credits', creditsRouter)
-app.use('/transactions', transactionsRouter)
-app.use('/borrows', borrowsRouter)
-app.use('/auth', authRouter)
-app.use('/internal', internalRouter)
+app.use('/api/users', usersRouter)
+app.use('/api/tokens', tokensRouter)
+app.use('/api/credits', creditsRouter)
+app.use('/api/transactions', transactionsRouter)
+app.use('/api/auth', authRouter)
+app.use('/api/internal', internalRouter)
 
 app.use('/api-doc', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 
 app.get('*', (req, res) => {
-    res.send('Wrong endpoint.')
+    res.send(`Wrong endpoint: ${req.url}`)
 })
 
 
@@ -46,6 +44,6 @@ app.use((err, req, res, next) => {
     res.status(status).json({ message })
 })
 
-app.listen(3001, () => {
+app.listen(port, () => {
     console.log('🚀 Server ready')
 })

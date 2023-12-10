@@ -15,12 +15,13 @@ model User {
   surname       String
   password      String
   birthDate     DateTime
-  is2faEnabled  Boolean
+  is2faEnabled  Boolean         @default(false)
   mainBalance   Int             @default(0)
   publicId      String          @default("")
   creditTickets CreditTicket[]
-  transaction   Transaction[]
+  transactions  Transaction[]
   loans         Loan[]
+  tokens        Token[]
 }
 
 model StaffMember {
@@ -32,12 +33,15 @@ model StaffMember {
 
 model Token {
   id            Int     @id @default(autoincrement())
-  publicKey     String  @unique
+  hash          String  @unique
+  localName     String
   usagesAmount  Int
   usagesLeft    Int
   activeUntill  DateTime
   maxAmount     Float
   tokenStatus   Int
+  ownerId       Int
+  owner         User      @relation(fields: [ownerId], references: [id])
 }
 
 model Transaction {
@@ -55,7 +59,7 @@ model Credit {
   id            Int       @id @default(autoincrement())
   active        Boolean   @default(true)
   title         String
-  description   String
+  receiverAccount   String
   minAmount     Float
   maxAmount     Float
   percent       Float

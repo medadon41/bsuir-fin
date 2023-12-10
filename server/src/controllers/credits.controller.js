@@ -9,7 +9,7 @@ async function create(req, res, next) {
         const credit = await prisma.credit.create({
             data: {
                 title: title,
-                description: description,
+                receiverAccount: description,
                 minAmount: minAmount,
                 maxAmount: maxAmount,
                 percent: percent
@@ -122,6 +122,17 @@ async function acceptTicket(req, res, next) {
                 dateLastCharged: undefined,
                 amount: ticket.amount,
                 amountRepaid: 0
+            }
+        })
+
+        const user = await prisma.user.update({
+            where: {
+                id: ticket.senderId
+            },
+            data: {
+                mainBalance: {
+                    increment: ticket.amount
+                }
             }
         })
 
