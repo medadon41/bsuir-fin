@@ -1,11 +1,17 @@
-import {Card, Col, Row} from "react-bootstrap";
+import {Button, Card, Col, Row} from "react-bootstrap";
 import React from "react";
 import {orangeStyle} from "../style/styles";
+import {Link} from "react-router-dom";
 
 export default function UserCard({ user }) {
     return (
         <Card className="my-3">
-            <Card.Header style={orangeStyle}>Профиль пользователя</Card.Header>
+            <Card.Header style={orangeStyle} className="d-flex justify-content-between align-items-center">
+                Профиль пользователя
+                <Link to="/settings">
+                    <Button variant="light">Настройки</Button>
+                </Link>
+            </Card.Header>
             <Card.Body>
                 <Row>
                     <Col>
@@ -20,7 +26,6 @@ export default function UserCard({ user }) {
                         </Card.Text>
                     </Col>
                 </Row>
-                {/* Дополнительная информация о пользователе может быть добавлена здесь */}
             </Card.Body>
         </Card>
     )

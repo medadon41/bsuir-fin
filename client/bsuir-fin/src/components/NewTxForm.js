@@ -1,7 +1,26 @@
 import {Button, Form, Modal} from "react-bootstrap";
 import {orangeStyle} from "../style/styles";
+import {useState} from "react";
+import SignatureModal from "./SignModal";
+import axios from "axios";
+import TxConfirmModal from "./TxConfirmModal";
 
 export default function NewTxForm({ show, handleClose, handleAddTransaction, newTransaction, handleInputChange }) {
+    const [showTokenModal, setShowTokenModal] = useState(false);
+
+    const handleTokenModalClose = () => {
+        setShowTokenModal(false);
+    };
+
+    const handleTokenModalOpen = () => {
+        setShowTokenModal(true);
+    };
+
+    const handleTxSubmit = (token, type) => {
+        setShowTokenModal(true);
+        handleAddTransaction(token, type)
+    }
+
     return (
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
@@ -35,9 +54,14 @@ export default function NewTxForm({ show, handleClose, handleAddTransaction, new
                 <Button variant="secondary" onClick={handleClose}>
                     Закрыть
                 </Button>
-                <Button style={orangeStyle} variant="primary" onClick={handleAddTransaction}>
-                    Добавить
+                <Button style={orangeStyle} variant="primary" onClick={handleTokenModalOpen}>
+                    Отправить
                 </Button>
+                <TxConfirmModal
+                    show={showTokenModal}
+                    onHide={handleTokenModalClose}
+                    onTokenSubmit={handleTxSubmit}
+                />
             </Modal.Footer>
         </Modal>
     );

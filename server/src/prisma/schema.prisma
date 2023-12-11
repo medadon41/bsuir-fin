@@ -18,6 +18,7 @@ model User {
   is2faEnabled  Boolean         @default(false)
   mainBalance   Int             @default(0)
   publicId      String          @default("")
+  otpKey        String?
   creditTickets CreditTicket[]
   transactions  Transaction[]
   loans         Loan[]
@@ -37,7 +38,7 @@ model Token {
   localName     String
   usagesAmount  Int
   usagesLeft    Int
-  activeUntill  DateTime
+  activeUntil   DateTime
   maxAmount     Float
   tokenStatus   Int
   ownerId       Int
@@ -53,6 +54,7 @@ model Transaction {
   receiverAccount   String
   amount            Float
   time              DateTime  @default(now())
+  confirmation      Int
 }
 
 model Credit {

@@ -1,6 +1,13 @@
-import {comparePasswords, generatePublicId, hashPassword} from "../services/users.service.js";
+import {
+    comparePasswords,
+    generatePublicId,
+    generateQRPair,
+    hashPassword,
+    verifyOTP
+} from "../services/users.service.js";
 import jwt from "jsonwebtoken";
 import {PrismaClient} from "@prisma/client";
+import {generatePair} from "../services/tokens.service.js";
 
 const prisma = new PrismaClient()
 const config = process.env
@@ -42,6 +49,14 @@ async function login(req, res, next) {
             return res.status(400).json({message: 'Wrong password'})
         }
 
+        if (user.is2faEnabled && !req.body.token) {
+            return res.status(400).json({tokenRequired: true})
+        } else if (user.is2faEnabled && req.body.token) {
+            if (!verifyOTP(user.otpKey, req.body.token)) {
+                return res.status(403).json({message: "Wrong 2FA code"})
+            }
+        }
+
         const accessToken = jwt.sign({ id: user.id }, config.TOKEN_KEY, { expiresIn: '30m' });
         const refreshToken = jwt.sign({ id: user.id }, config.TOKEN_KEY, { expiresIn: '1d' });
 
@@ -76,8 +91,44 @@ async function refreshToken(req, res, next) {
     }
 }
 
+async function generateQR(req, res, next) {
+    try {
+        const { keyBase, url } = await generateQRPair()
+
+        res.status(200).json({qrLink: url, key: keyBase})
+    } catch (e) {
+        next(e)
+    }
+}
+
+async function activate2FA(req, res, next) {
+    try {
+        const { key, code } = req.body
+
+        if (!verifyOTP(key, code)) {
+            return res.status(400).json({message: "Incorrect code"})
+        }
+
+        const user = await prisma.user.update({
+            where: {
+                id: req.id.id
+            },
+            data: {
+                otpKey: key,
+                is2faEnabled: true
+            }
+        })
+
+        res.status(200).json(user)
+    } catch (e) {
+        next(e)
+    }
+}
+
 export {
     signUp,
     login,
-    refreshToken
+    refreshToken,
+    generateQR,
+    activate2FA
 }

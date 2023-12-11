@@ -7,7 +7,7 @@ async function create(req, res, next) {
     try {
         const { localName, usagesAmount, activeUntil, maxAmount } = req.body
 
-        const { base, hash } = await generatePair()
+        const { rand, hash } = await generatePair()
 
         const token = await prisma.token.create({
             data: {
@@ -15,7 +15,7 @@ async function create(req, res, next) {
                 localName: localName,
                 usagesAmount: +usagesAmount,
                 usagesLeft: +usagesAmount,
-                activeUntill: activeUntil,
+                activeUntil: new Date(activeUntil),
                 maxAmount: +maxAmount,
                 tokenStatus: 1,
                 owner: {
@@ -25,17 +25,31 @@ async function create(req, res, next) {
                 }
             }
         })
-
-        res.status(200).json({originalToken: base, token: token})
+        res.status(200).json({originalToken: rand, token: token})
     } catch (e) {
         next(e)
     }
 }
 
-async function check(req, res, next) {
+async function deactivate(req, res, next) {
+    try {
+        const { id } = req.params
 
+        const token = await prisma.token.update({
+            where: {
+                id: +id
+            },
+            data: {
+                tokenStatus: 0
+            }
+        })
+        res.json(token)
+    } catch (e) {
+        next(e)
+    }
 }
 
-async function use(req, res, next) {
-
+export {
+    create,
+    deactivate
 }

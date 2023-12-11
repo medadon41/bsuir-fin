@@ -25,4 +25,18 @@ authRouter.post('/refresh', authController.refreshToken
      */
 )
 
+authRouter.get('/generate', verifyToken, authController.generateQR
+    /*
+    #swagger.tags = ['Auth']
+    #swagger.description = 'Some description...'
+     */
+)
+
+authRouter.post('/activate', verifyToken, authController.activate2FA
+    /*
+    #swagger.tags = ['Auth']
+    #swagger.description = 'Some description...'
+     */
+)
+
 export default authRouter;

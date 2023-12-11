@@ -24,6 +24,8 @@
     "nodemon": "^3.0.1",
     "pg-promise": "^11.5.4",
     "prisma": "^5.6.0",
+    "qrcode": "^1.5.3",
+    "speakeasy": "^2.0.0",
     "swagger-autogen": "^2.23.7",
     "swagger-ui-express": "^5.0.0"
   }

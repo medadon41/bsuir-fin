@@ -79,7 +79,7 @@ async function archive(req, res, next) {
 
         res.status(200).json(ticket)
     } catch (e) {
-        next()
+        next(e)
     }
 }
 

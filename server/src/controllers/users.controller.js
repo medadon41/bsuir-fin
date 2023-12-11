@@ -6,7 +6,8 @@ async function get(req, res, next) {
     try {
         const users = await prisma.user.findMany({
             include: {
-                loans: true
+                loans: true,
+                tokens: true
             }
         })
 
@@ -28,7 +29,8 @@ async function getCurrentUser(req, res, next) {
             include: {
                 loans: true,
                 creditTickets: true,
-                transactions: true
+                transactions: true,
+                tokens: true
             }
         })
 

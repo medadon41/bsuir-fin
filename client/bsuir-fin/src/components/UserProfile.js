@@ -25,8 +25,16 @@ const UserProfile = () => {
 
         axios.get(apiURL, {headers, params})
             .then(response => {
+                if (response.data === "") {
+                    const refreshUrl = "/api/auth/refresh"
+                    axios.post(refreshUrl, {headers, params})
+                        .then(r => {
+                            const token = response.headers.authorization.replace('Bearer ', '');
+                            sessionStorage.setItem('token', token);
+                            console.log("Refreshing token")
+                        })
+                }
                 setUserData(response.data);
-                console.log(response.data)
             })
             .catch(error => {
                 console.error('Error fetching user data:', error);
@@ -37,7 +45,7 @@ const UserProfile = () => {
         <Container>
             <Logo/>
             <UserCard user={userData}/>
-            <TransactionsTableShort transactions={userData.transaction ?? []}/>
+            <TransactionsTableShort transactions={userData.transaction ?? []} userData={userData}/>
             <CreditsSection loans={userData.loans ?? []}/>
         </Container>
     );

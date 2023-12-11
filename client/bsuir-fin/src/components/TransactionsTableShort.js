@@ -6,7 +6,7 @@ import NewTxForm from "./NewTxForm";
 import axios from "axios";
 import Cookies from "js-cookie";
 
-export default function TransactionsTableShort({ transactions }) {
+export default function TransactionsTableShort({ transactions, userData }) {
     const [showModal, setShowModal] = useState(false);
     const [newTransaction, setNewTransaction] = useState({ receiverAccount: '', amount: 0 });
 
@@ -18,7 +18,7 @@ export default function TransactionsTableShort({ transactions }) {
         setNewTransaction({ ...newTransaction, [name]: value });
     };
 
-    const handleAddTransaction = () => {
+    const handleAddTransaction = (token, type) => {
         const refreshToken = Cookies.get('token');
         const accessToken = sessionStorage.getItem('token')
 
@@ -29,16 +29,15 @@ export default function TransactionsTableShort({ transactions }) {
             refreshToken,
         };
 
-        axios.post('/api/transactions/', {...newTransaction, type: 0}, {
+        console.log({...newTransaction, confirmation: +type, token: token})
+
+        axios.post('/api/transactions/', {...newTransaction, confirmation: +type, token: token}, {
             headers: headers,
-            params: refreshToken
+            params: params
         })
           .then(response => {
-            // Обработка успешного ответа
             console.log('Transaction added successfully');
-            // Закрыть модальное окно
             handleCloseModal();
-            // Обновить список транзакций (если необходимо)
             // updateTransactionList();
           })
           .catch(error => {

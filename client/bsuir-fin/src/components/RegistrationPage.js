@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {Container, Form, Button, Row, Col} from 'react-bootstrap';
 import axios from "axios";
 import Logo from "./Logo";
-import { useNavigate } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 
 const RegistrationPage = () => {
     const [formData, setFormData] = useState({
@@ -90,6 +90,11 @@ const RegistrationPage = () => {
                                 onChange={handleInputChange}
                             />
                         </Form.Group>
+                        <Link to={"/login"}>
+                            <p>
+                                У меня уже есть аккаунт
+                            </p>
+                        </Link>
                         <Button variant="primary" type="submit">
                             Зарегистрироваться
                         </Button>

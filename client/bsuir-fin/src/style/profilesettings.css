@@ -1,0 +1,7 @@
+.custom-switch .custom-control-input:checked {
+    background-color: #FF8C00; /* Зеленый цвет для включенного состояния */
+}
+
+.custom-switch .custom-control-label::before {
+    background-color: #6c757d; /* Серый цвет для ползунка */
+}

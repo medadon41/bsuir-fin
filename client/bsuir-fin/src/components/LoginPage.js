@@ -3,13 +3,16 @@ import React, { useState } from 'react';
 import { Container, Form, Button, Row, Col } from 'react-bootstrap';
 import Logo from './Logo';
 import axios from "axios";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
+import TwoFaAuth from "./TwoFaAuth";
 
 const LoginPage = () => {
     const [formData, setFormData] = useState({
         login: '',
         password: '',
     });
+
+    const [showTokenModal, setShowTokenModal] = useState(false);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -33,8 +36,35 @@ const LoginPage = () => {
 
           })
           .catch(error => {
-            console.error('Error logging in:', error);
+            if(error.response.data.tokenRequired) {
+                setShowTokenModal(true)
+            }
           });
+    };
+
+    const handleTokenSubmit = (token) => {
+        const data = {...formData, token: token}
+
+        axios.post('/api/auth/login', data)
+            .then(response => {
+                if (response.status === 200 && response.headers.authorization) {
+                    const token = response.headers.authorization.replace('Bearer ', '');
+                    sessionStorage.setItem('token', token);
+
+                    navigate('/profile');
+                }
+
+            })
+            .catch(error => {
+                if(error.response.data.tokenRequired) {
+                    setShowTokenModal(true)
+                }
+            });
+        setShowTokenModal(false);
+    };
+
+    const handleTokenModalClose = () => {
+        setShowTokenModal(false);
     };
 
     return (
@@ -44,7 +74,7 @@ const LoginPage = () => {
                     <Logo />
                     <h2>Вход</h2>
                     <Form onSubmit={handleSubmit}>
-                        <Form.Group controlId="email">
+                        <Form.Group controlId="email" >
                             <Form.Label>Email</Form.Label>
                             <Form.Control
                                 type="email"
@@ -64,12 +94,22 @@ const LoginPage = () => {
                                 onChange={handleInputChange}
                             />
                         </Form.Group>
+                        <Link to={"/register"}>
+                            <p>
+                                У меня нет аккаунта
+                            </p>
+                        </Link>
                         <Button variant="primary" type="submit">
                             Войти
                         </Button>
                     </Form>
                 </Col>
             </Row>
+            <TwoFaAuth
+                show={showTokenModal}
+                onHide={handleTokenModalClose}
+                onTokenSubmit={handleTokenSubmit}
+            />
         </Container>
     );
 };

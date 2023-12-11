@@ -12,7 +12,7 @@ userRouter.get('/info', verifyToken, usersController.getCurrentUser
      */
 );
 
-userRouter.get('/', verifyToken, usersController.get
+userRouter.get('/', usersController.get
     /*
     #swagger.tags = ['Users']
     #swagger.description = 'Some description...'

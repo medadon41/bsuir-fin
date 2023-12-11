@@ -49,7 +49,76 @@
           "Users"
         ],
         "description": "Some description...",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/tokens/": {
+      "post": {
+        "tags": [
+          "Tokens"
+        ],
+        "description": "Creates a new transaction",
         "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "localName": {
+                  "example": "any"
+                },
+                "usagesAmount": {
+                  "example": "any"
+                },
+                "activeUntil": {
+                  "example": "any"
+                },
+                "maxAmount": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/api/tokens/{id}/deactivate": {
+      "get": {
+        "tags": [
+          "Tokens"
+        ],
+        "description": "Creates a new transaction",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
           {
             "name": "authorization",
             "in": "header",
@@ -441,6 +510,9 @@
             "schema": {
               "type": "object",
               "properties": {
+                "token": {
+                  "example": "any"
+                },
                 "receiverAccount": {
                   "example": "any"
                 },
@@ -448,6 +520,9 @@
                   "example": "any"
                 },
                 "type": {
+                  "example": "any"
+                },
+                "confirmation": {
                   "example": "any"
                 }
               }
@@ -536,6 +611,9 @@
             "schema": {
               "type": "object",
               "properties": {
+                "token": {
+                  "example": "any"
+                },
                 "login": {
                   "example": "any"
                 },
@@ -549,6 +627,9 @@
         "responses": {
           "400": {
             "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
           }
         }
       }
@@ -565,6 +646,19 @@
           },
           "401": {
             "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/auth/generate": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "description": "Some description...",
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
