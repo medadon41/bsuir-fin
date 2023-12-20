@@ -17,7 +17,7 @@ model User {
   birthDate     DateTime
   is2faEnabled  Boolean         @default(false)
   mainBalance   Int             @default(0)
-  publicId      String          @default("")
+  publicId      String          @default("")  @unique
   otpKey        String?
   creditTickets CreditTicket[]
   transactions  Transaction[]
@@ -58,22 +58,23 @@ model Transaction {
 }
 
 model Credit {
-  id            Int       @id @default(autoincrement())
-  active        Boolean   @default(true)
-  title         String
+  id                Int       @id @default(autoincrement())
+  active            Boolean   @default(true)
+  title             String
   receiverAccount   String
-  minAmount     Float
-  maxAmount     Float
-  percent       Float
-  maxYears      Float     @default(0)
-  tickets       CreditTicket[]
-  loans         Loan[]
+  minAmount         Float
+  maxAmount         Float
+  percent           Float
+  maxYears          Float     @default(0)
+  minYears          Float     @default(0)
+  tickets           CreditTicket[]
+  loans             Loan[]
 }
 
 model CreditTicket {
   id            Int           @id @default(autoincrement())
-  creditId      Int
-  credit        Credit        @relation(fields: [creditId], references: [id])
+  creditId      Int?
+  credit        Credit?        @relation(fields: [creditId], references: [id], onDelete: Cascade)
   senderId      Int
   sender        User          @relation(fields: [senderId], references: [id])
   status        Int
@@ -86,8 +87,8 @@ model CreditTicket {
 
 model Loan {
   id                Int           @id @default(autoincrement())
-  creditId          Int
-  credit            Credit        @relation(fields: [creditId], references: [id])
+  creditId          Int?
+  credit            Credit?        @relation(fields: [creditId], references: [id], onDelete: SetNull)
   borrowerId        Int
   borrower          User          @relation(fields: [borrowerId], references: [id])
   dateStarted       DateTime      @default(now())

@@ -35,7 +35,6 @@ async function get(req, res, next) {
 async function post(req, res, next) {
     try {
         const { receiverAccount, amount, type, confirmation } = req.body
-
         const sender = await prisma.user.findFirst({
             where: {
                 id: req.id.id,
@@ -96,6 +95,7 @@ async function post(req, res, next) {
             })
 
             try {
+
                 const receiver = await prisma.user.update({
                     where: {
                         publicId: receiverAccount
@@ -107,7 +107,7 @@ async function post(req, res, next) {
                     }
                 })
             } catch (e) {
-                return res.status(404).json({message: "Receiver not found"})
+                return res.status(404).json({message: e})
             }
         } else if (+type === 1) {
             const currDate = new Date()
@@ -136,14 +136,15 @@ async function post(req, res, next) {
                 }
             })
 
-            const isRepaid = loan.amountRepaid + amount > loan.amount
+            const isRepaid = loan.amountRepaid + +amount >= loan.amount
+            console.log(loan.amountRepaid, amount, loan.amount, loan.amountRepaid + amount)
             const loanUpd = await prisma.loan.update({
                 where: {
                     id: loan.id
                 },
                 data: {
                     dateLastCharged: currDate,
-                    amountRepaid: loan.amountRepaid + amount,
+                    amountRepaid: loan.amountRepaid + +amount,
                     isRepaid: isRepaid
                 }
             })
@@ -157,7 +158,8 @@ async function post(req, res, next) {
                 receiverAccount: receiverAccount,
                 senderAccount: sender.publicId,
                 amount: +amount,
-                type: +type
+                type: +type,
+                confirmation: +confirmation
             }
         })
 

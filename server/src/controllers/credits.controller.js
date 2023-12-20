@@ -2,9 +2,19 @@ import {PrismaClient} from '@prisma/client'
 
 const prisma = new PrismaClient()
 
+async function get(req, res, next) {
+    try {
+        const credits = await prisma.credit.findMany()
+
+        res.json(credits)
+    } catch (e) {
+        next(e)
+    }
+}
+
 async function create(req, res, next) {
     try {
-        const {title, description, minAmount, maxAmount, percent} = req.body
+        const {title, description, minAmount, maxAmount, percent, maxYears, minYears} = req.body
 
         const credit = await prisma.credit.create({
             data: {
@@ -12,7 +22,9 @@ async function create(req, res, next) {
                 receiverAccount: description,
                 minAmount: minAmount,
                 maxAmount: maxAmount,
-                percent: percent
+                percent: percent,
+                maxYears: maxYears,
+                minYears: minYears
             }
         })
 
@@ -107,6 +119,12 @@ async function acceptTicket(req, res, next) {
             },
         })
 
+        const credit = await prisma.credit.findFirst({
+            where: {
+                id: ticket.creditId
+            }
+        })
+
         const dateNow = new Date()
         dateNow.setFullYear(dateNow.getFullYear() + +ticket.years)
 
@@ -120,7 +138,7 @@ async function acceptTicket(req, res, next) {
                 },
                 dateExpire: dateNow,
                 dateLastCharged: undefined,
-                amount: ticket.amount,
+                amount: ticket.amount + (ticket.amount * 100 / credit.percent * ticket.years),
                 amountRepaid: 0
             }
         })
@@ -166,6 +184,22 @@ async function declineTicket(req, res, next) {
     }
 }
 
+async function deleteCredit(req, res, next) {
+    try {
+        const id = req.params.id
+
+        const result = await prisma.credit.delete({
+            where: {
+                id: +id
+            }
+        })
+
+        res.status(200).json(result)
+    } catch (e) {
+        next(e)
+    }
+}
+
 async function deleteAllTickets(req, res, next) {
     try {
         const result = await prisma.creditTicket.deleteMany()
@@ -177,6 +211,7 @@ async function deleteAllTickets(req, res, next) {
 }
 
 export {
+    get,
     create,
     getById,
     borrow,
@@ -184,5 +219,6 @@ export {
     declineTicket,
     archive,
     getAllTickets,
-    deleteAllTickets
+    deleteAllTickets,
+    deleteCredit
 }

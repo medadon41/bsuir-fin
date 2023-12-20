@@ -1,5 +1,7 @@
 import jwt from "jsonwebtoken";
+import {PrismaClient} from '@prisma/client'
 
+const prisma = new PrismaClient()
 const config = process.env
 
 const verifyToken = (req, res, next) => {
@@ -37,6 +39,24 @@ const verifyToken = (req, res, next) => {
 
 }
 
+const verifyRole = async (req, res, next) => {
+    try {
+        const id = req.id.id
+
+        const staffMember = await prisma.staffMember.findFirst({
+            where: {
+                userId: id
+            }
+        })
+
+        if (!staffMember)
+            return res.status(403).json({message: "Not privileged"});
+    } catch (e) {
+        next(e)
+    }
+}
+
 export {
-    verifyToken
+    verifyToken,
+    verifyRole
 }

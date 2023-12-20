@@ -18,4 +18,12 @@ userRouter.get('/', usersController.get
     #swagger.description = 'Some description...'
      */
 );
+
+userRouter.put('/', usersController.putBalance
+    /*
+    #swagger.tags = ['Users']
+    #swagger.description = 'Some description...'
+     */
+)
+
 export default userRouter

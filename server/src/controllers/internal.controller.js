@@ -52,7 +52,19 @@ async function demote(req, res, next) {
 
 }
 
+async function getStats(req, res, next) {
+    try {
+        const usersCount = await prisma.user.count()
+        const txCount = await prisma.transaction.count()
+
+        res.status(200).json({usersCount: usersCount, txCount: txCount})
+    } catch (e) {
+        next(e)
+    }
+}
+
 export {
     promote,
-    getAllStaff
+    getAllStaff,
+    getStats
 }

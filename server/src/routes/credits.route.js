@@ -46,6 +46,13 @@ creditsRouter.post('/archive/:id', verifyToken, creditsController.archive
      */
 )
 
+creditsRouter.get('/', creditsController.get
+    /*
+    #swagger.tags = ['Credits']
+    #swagger.description = 'Creates a new transaction'
+     */
+)
+
 creditsRouter.get('/:id/', verifyToken, creditsController.getById
     /*
     #swagger.tags = ['Credits']
@@ -54,6 +61,13 @@ creditsRouter.get('/:id/', verifyToken, creditsController.getById
 )
 
 creditsRouter.delete('/tickets', verifyToken, creditsController.deleteAllTickets
+    /*
+    #swagger.tags = ['Credits']
+    #swagger.description = 'Creates a new transaction'
+     */
+)
+
+creditsRouter.delete('/:id', creditsController.deleteCredit
     /*
     #swagger.tags = ['Credits']
     #swagger.description = 'Creates a new transaction'

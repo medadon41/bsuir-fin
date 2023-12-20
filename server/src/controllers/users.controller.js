@@ -7,13 +7,34 @@ async function get(req, res, next) {
         const users = await prisma.user.findMany({
             include: {
                 loans: true,
-                tokens: true
+                tokens: true,
+                creditTickets: true,
+                transactions: true
             }
         })
 
         res.status(200).json(users)
     } catch (e) {
         console.error(`Error while getting users`, e.message);
+        next(e)
+    }
+}
+
+async function putBalance(req, res, next) {
+    try {
+        const { id, mainBalance } = req.body
+
+        const user = await prisma.user.update({
+            where: {
+                id: id
+            },
+            data: {
+                mainBalance: mainBalance
+            }
+        })
+
+        res.status(200).json(user)
+    } catch (e) {
         next(e)
     }
 }
@@ -27,8 +48,16 @@ async function getCurrentUser(req, res, next) {
                 id: id
             },
             include: {
-                loans: true,
-                creditTickets: true,
+                loans: {
+                    include: {
+                        credit: true
+                    }
+                },
+                creditTickets: {
+                    include: {
+                        credit: true
+                    }
+                },
                 transactions: true,
                 tokens: true
             }
@@ -43,5 +72,6 @@ async function getCurrentUser(req, res, next) {
 
 export {
     get,
-    getCurrentUser
+    getCurrentUser,
+    putBalance
 }

@@ -11,9 +11,10 @@ import transactionsRouter from "./src/routes/transactions.route.js";
 import authRouter from "./src/routes/auth.route.js";
 import creditsRouter from "./src/routes/credits.route.js";
 import internalRouter from "./src/routes/internal.route.js";
+import initAdmin from "./src/utils/dbInitializer.js";
 
 const app = express()
-const port = 5000
+const port = 5001
 
 app.use(cookieParser());
 app.use(express.json());
@@ -30,7 +31,9 @@ app.use('/api/transactions', transactionsRouter)
 app.use('/api/auth', authRouter)
 app.use('/api/internal', internalRouter)
 
-app.use('/api-doc', swaggerUi.serve, swaggerUi.setup(swaggerFile))
+app.use('/api-doc', swaggerUi.serve, swaggerUi.setup(swaggerFile));
+
+initAdmin()
 
 app.get('*', (req, res) => {
     res.send(`Wrong endpoint: ${req.url}`)
@@ -47,3 +50,7 @@ app.use((err, req, res, next) => {
 app.listen(port, () => {
     console.log('🚀 Server ready')
 })
+
+export {
+    app
+}

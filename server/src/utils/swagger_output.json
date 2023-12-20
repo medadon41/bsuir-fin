@@ -54,6 +54,34 @@
             "description": "OK"
           }
         }
+      },
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "description": "Some description...",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "example": "any"
+                },
+                "mainBalance": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     },
     "/api/tokens/": {
@@ -167,6 +195,12 @@
                   "example": "any"
                 },
                 "percent": {
+                  "example": "any"
+                },
+                "maxYears": {
+                  "example": "any"
+                },
+                "minYears": {
                   "example": "any"
                 }
               }
@@ -400,6 +434,19 @@
         }
       }
     },
+    "/api/credits/": {
+      "get": {
+        "tags": [
+          "Credits"
+        ],
+        "description": "Creates a new transaction",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/credits/{id}/": {
       "get": {
         "tags": [
@@ -431,6 +478,27 @@
           },
           "403": {
             "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/api/credits/{id}": {
+      "delete": {
+        "tags": [
+          "Credits"
+        ],
+        "description": "Creates a new transaction",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -651,14 +719,74 @@
       }
     },
     "/api/auth/generate": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "description": "Some description...",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/api/auth/activate": {
       "post": {
         "tags": [
           "Auth"
         ],
         "description": "Some description...",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "key": {
+                  "example": "any"
+                },
+                "code": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           }
         }
       }
@@ -706,6 +834,19 @@
           },
           "404": {
             "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/internal/stats": {
+      "get": {
+        "tags": [
+          "Internal"
+        ],
+        "description": "Returns transaction by id",
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }

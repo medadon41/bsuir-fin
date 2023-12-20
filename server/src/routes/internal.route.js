@@ -11,11 +11,20 @@ internalRouter.post('/promote', verifyToken, internalController.promote
      */
 );
 
+internalRouter.get('/stats', internalController.getStats
+    /*
+    #swagger.tags = ['Internal']
+    #swagger.description = 'Returns transaction by id'
+     */
+);
+
 internalRouter.get('/', verifyToken, internalController.getAllStaff
     /*
     #swagger.tags = ['Internal']
     #swagger.description = 'Returns transaction by id'
      */
 );
+
+
 
 export default internalRouter;
